@@ -4,6 +4,7 @@ import ImageHoster.model.User;
 import ImageHoster.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.regex.*;
 
 @Service
 public class UserService {
@@ -15,6 +16,8 @@ public class UserService {
     public void registerUser(User newUser) {
         userRepository.registerUser(newUser);
     }
+
+
 
     //Since we did not have any user in the database, therefore the user with username 'upgrad' and password 'password' was hard-coded
     //This method returned true if the username was 'upgrad' and password is 'password'
@@ -30,6 +33,34 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+   public boolean isValidPassword(String password)
+    {
+
+        // Regex to check valid password.
+        String regex = "^(?=.*[0-9])"
+            + "(?=.*[a-zA-Z])"
+            + "(?=.*[^a-zA-Z0-9])"
+            + "(?=\\S+$).{3,100}$";
+
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
+
+        // If the password is empty
+        // return false
+        if (password == null) {
+            return false;
+        }
+
+        // Pattern class contains matcher() method
+        // to find matching between given password
+        // and regular expression.
+        Matcher m = p.matcher(password);
+
+        // Return if the password
+        // matched the ReGex
+        return m.matches();
     }
 
 }
