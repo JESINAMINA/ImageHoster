@@ -218,10 +218,12 @@ public class ImageController {
         for (int i = 0; i <= tags.size() - 2; i++) {
             tagString.append(tags.get(i).getName()).append(",");
         }
+        try {
+            Tag lastTag = tags.get(tags.size() - 1);
+            tagString.append(lastTag.getName());
+        } catch(Exception e){
 
-        Tag lastTag = tags.get(tags.size() - 1);
-        tagString.append(lastTag.getName());
-
+        }
         return tagString.toString();
     }
 }
