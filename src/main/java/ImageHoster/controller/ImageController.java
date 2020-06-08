@@ -2,9 +2,12 @@ package ImageHoster.controller;
 
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
+import ImageHoster.model.Comment;
 import ImageHoster.model.User;
 import ImageHoster.service.ImageService;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.TagService;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,11 +48,12 @@ public class ImageController {
     //Also now you need to add the tags of an image in the Model type object
     //Here a list of tags is added in the Model type object
     //this list is then sent to 'images/image.html' file and the tags are displayed
-    @RequestMapping("/images/{id}")
+    @RequestMapping("/images/{id}/{title}")
     public String showImage(@PathVariable("id") int id, Model model) {
         Image image = imageService.getImageById(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments", image.getComments());
         return "images/image";
     }
 
@@ -84,6 +88,22 @@ public class ImageController {
         imageService.uploadImage(newImage);
         return "redirect:/images";
     }
+
+//    @RequestMapping(value = "/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
+//    public String createComment(@PathVariable("imageId") Integer imageId,@PathVariable("imageTitle") String imageTitle, @RequestParam("comment") String comment,Model model ,HttpSession session) throws IOException {
+//
+//        User user = (User) session.getAttribute("loggeduser");
+//        Image image = imageService.getImage(imageId);
+//
+//        Comment comment1 = new Comment();
+//        comment1.setText(comment);
+//        comment1.setUser(user);
+//        comment1.setImage(image);
+//        comment1.setCreatedDate(LocalDate.now());
+//        commentService.createComment(comment1);
+//        return "redirect:/images/" + imageId;
+//    }
+
 
     //This controller method is called when the request pattern is of type 'editImage'
     //This method fetches the image with the corresponding id from the database and adds it to the model with the key as 'image'
@@ -139,7 +159,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" + updatedImage.getId()+"/"+updatedImage.getTitle();
     }
 
 

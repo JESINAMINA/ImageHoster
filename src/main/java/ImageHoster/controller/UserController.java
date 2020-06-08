@@ -42,8 +42,9 @@ public class UserController {
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
     public String registerUser(User user, Model model) {
+        //Validation for password
         String password = user.getPassword();
-        boolean isValid = userService.isValidPassword(password);
+        boolean isValid = this.isValidPassword(password);
         if(!isValid) {
             String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
             model.addAttribute("User", user);
@@ -89,5 +90,34 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    //Method for password validation
+    public boolean isValidPassword(String password)
+    {
+
+        // Regex to check valid password.
+        String regex = "^(?=.*[0-9])"
+            + "(?=.*[a-zA-Z])"
+            + "(?=.*[^a-zA-Z0-9])"
+            + "(?=\\S+$).{3,100}$";
+
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
+
+        // If the password is empty
+        // return false
+        if (password == null) {
+            return false;
+        }
+
+        // Pattern class contains matcher() method
+        // to find matching between given password
+        // and regular expression.
+        Matcher m = p.matcher(password);
+
+        // Return if the password
+        // matched the ReGex
+        return m.matches();
     }
 }
